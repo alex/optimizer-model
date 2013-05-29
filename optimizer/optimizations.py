@@ -1,4 +1,6 @@
-from . import Operations
+import operator
+
+from . import Operations, boxes
 
 
 class BaseOptimization(object):
@@ -18,13 +20,18 @@ class OperationRecorder(BaseOptimization):
 
 
 class ConstantFold(BaseOptimization):
+    op_map = {
+        Operations.INT_ADD: operator.add,
+    }
+
     def __init__(self, prev):
         self.prev = prev
 
     def handle(self, optimizer, operation):
-        if operation.op == Operations.INT_ADD:
-            [lhs, rhs] = optimizer.getvalues(operation.arguments)
-            if rhs.is_constant() and rhs.getint() == 0:
-                optimizer.make_equal_to(lhs, rhs)
+        if operation.op in self.op_map:
+            args = optimizer.getvalues(operation.arguments)
+            if all(arg.is_constant() for arg in args):
+                res = self.op_map[operation.op](*(arg.getint() for arg in args))
+                optimizer.make_equal_to(operation, boxes.BoxInt(res))
                 return
         self.prev.handle(optimizer, operation)
