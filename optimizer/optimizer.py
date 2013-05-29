@@ -23,8 +23,8 @@ class Optimizer(object):
         self.first_optimizer.handle(self, value)
         return value
 
-    def new_constant(self, box):
-        return Constant(box)
+    def new_constant_int(self, intvalue):
+        return ConstantInt(intvalue)
 
     def build_operations(self):
         return self.recorder.get_operations()
@@ -67,16 +67,18 @@ class InputValue(NumberedValue):
         self.tp = tp
 
 
-class Constant(BaseValue):
-    def __init__(self, box):
-        super(Constant, self).__init__()
-        self.box = box
-
+class BaseConstant(BaseValue):
     def is_constant(self):
         return True
 
     def getvalue(self, optimizer):
         return self
 
+
+class ConstantInt(BaseConstant):
+    def __init__(self, intvalue):
+        super(ConstantInt, self).__init__()
+        self.intvalue = intvalue
+
     def getint(self):
-        return self.box.getint()
+        return self.intvalue

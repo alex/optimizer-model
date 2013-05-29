@@ -1,4 +1,4 @@
-from optimizer import Optimizer, Operations, Types, boxes
+from optimizer import Optimizer, Operations, Types
 from optimizer.optimizations import ConstantFold
 
 
@@ -7,7 +7,7 @@ class TestConstantFold(object):
         opt = Optimizer([ConstantFold])
 
         opt.add_operation(Types.INT, Operations.INT_ADD,
-            [opt.new_constant(boxes.BoxInt(1)), opt.new_constant(boxes.BoxInt(0))]
+            [opt.new_constant_int(1), opt.new_constant_int(0)]
         )
         ops = opt.build_operations()
 
@@ -18,7 +18,7 @@ class TestConstantFold(object):
         i0 = opt.add_input(Types.INT)
 
         opt.add_operation(Types.INT, Operations.INT_ADD,
-            [i0, opt.new_constant(boxes.BoxInt(1))]
+            [i0, opt.new_constant_int(1)]
         )
         ops = opt.build_operations()
         assert len(ops) == 1

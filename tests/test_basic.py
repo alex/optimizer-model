@@ -1,4 +1,4 @@
-from optimizer import Optimizer, Operations, Types, boxes
+from optimizer import Optimizer, Operations, Types
 
 
 class TestBasic(object):
