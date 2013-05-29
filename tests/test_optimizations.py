@@ -8,7 +8,7 @@ class TestConstantFold(object):
 
         i0 = opt.add_input(Types.INT)
 
-        opt.add_operation(Operations.INT_ADD,
+        opt.add_operation(Types.INT, Operations.INT_ADD,
             [i0, opt.new_constant(boxes.BoxInt(0))]
         )
         ops = opt.build_operations()
@@ -19,7 +19,7 @@ class TestConstantFold(object):
         opt = Optimizer([ConstantFold])
         i0 = opt.add_input(Types.INT)
 
-        opt.add_operation(Operations.INT_ADD,
+        opt.add_operation(Types.INT, Operations.INT_ADD,
             [i0, opt.new_constant(boxes.BoxInt(1))]
         )
         ops = opt.build_operations()

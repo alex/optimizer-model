@@ -7,4 +7,5 @@ class Operations(Enum):
 
 
 class Types(Enum):
-    INT = 0
+    VOID = 0
+    INT = 1

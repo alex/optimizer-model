@@ -17,8 +17,8 @@ class Optimizer(object):
         self.values.append(value)
         return value
 
-    def add_operation(self, op, arguments):
-        value = OperationValue(len(self.values), op, arguments)
+    def add_operation(self, tp, op, arguments):
+        value = OperationValue(len(self.values), tp, op, arguments)
         self.values.append(value)
         self.first_optimizer.handle(self, value)
         return value
@@ -54,8 +54,9 @@ class NumberedValue(BaseValue):
 
 
 class OperationValue(NumberedValue):
-    def __init__(self, valuenum, op, arguments):
+    def __init__(self, valuenum, tp, op, arguments):
         super(OperationValue, self).__init__(valuenum)
+        self.tp = tp
         self.op = op
         self.arguments = arguments
 
