@@ -1,6 +1,6 @@
 import operator
 
-from . import Operations, boxes
+from . import Operations
 
 
 class BaseOptimization(object):
@@ -32,6 +32,6 @@ class ConstantFold(BaseOptimization):
             args = optimizer.getvalues(operation.arguments)
             if all(arg.is_constant() for arg in args):
                 res = self.op_map[operation.op](*(arg.getint() for arg in args))
-                optimizer.make_equal_to(operation, boxes.BoxInt(res))
+                optimizer.make_equal_to(operation, optimizer.new_constant_int(res))
                 return
         self.prev.handle(optimizer, operation)
