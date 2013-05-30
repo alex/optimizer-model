@@ -33,6 +33,32 @@ class TestConstantFold(object):
         assert len(ops) == 1
 
 
+class TestGuardPropogation(object):
+    def test_guard_true(self):
+        opt = Optimizer([ConstantFold, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i0])
+        opt.add_operation(Types.INT, Operations.INT_EQ, [i0, opt.new_constant_int(1)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 1
+
+        assert opt.getvalue(i0).getint() == 1
+
+    def test_guard_false(self):
+        opt = Optimizer([ConstantFold, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        opt.add_operation(Types.VOID, Operations.GUARD_FALSE, [i0])
+        opt.add_operation(Types.INT, Operations.INT_EQ, [i0, opt.new_constant_int(1)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 1
+
+        assert opt.getvalue(i0).getint() == 0
+
+
 class TestIntBounds(object):
     def test_lt(self):
         opt = Optimizer([IntBounds, GuardPropagation])

@@ -9,6 +9,8 @@ class ConstantFold(BaseOptimization):
     op_map = {
         Operations.INT_ADD: operator.add,
         Operations.INT_SUB: operator.sub,
+
+        Operations.INT_EQ: operator.eq,
     }
 
     def handle(self, optimizer, operation):
@@ -28,5 +30,10 @@ class GuardPropagation(BaseOptimization):
     def optimize_GUARD_TRUE(self, optimizer, operation):
         self.prev.handle(optimizer, operation)
         optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(1))
+
+    @dispatcher.register(Operations.GUARD_FALSE)
+    def optimize_GUARD_FALSE(self, optimizer, operation):
+        self.prev.handle(optimizer, operation)
+        optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(0))
 
     handle = dispatcher.build_handler()
