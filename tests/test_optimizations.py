@@ -3,7 +3,7 @@ from optimizer.optimizations import ConstantFold, IntBounds, GuardPropagation
 
 
 class TestConstantFold(object):
-    def test_plus_zero(self):
+    def test_addition(self):
         opt = Optimizer([ConstantFold])
 
         opt.add_operation(Types.INT, Operations.INT_ADD,
