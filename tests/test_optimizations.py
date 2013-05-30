@@ -1,5 +1,6 @@
 from optimizer import Optimizer, Operations, Types
-from optimizer.optimizations import ConstantFold, IntBounds, GuardPropagation
+from optimizer.optimizations import (ConstantFold, IntBounds, GuardPropagation,
+    Virtualize)
 
 
 class TestConstantFold(object):
@@ -84,6 +85,25 @@ class TestIntBounds(object):
         )
         opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i1])
         opt.add_operation(Types.INT, Operations.INT_GT, [i0, opt.new_constant_int(5)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+
+
+class TestVirtualize(object):
+    def test_simple_new(self):
+        opt = Optimizer([Virtualize])
+
+        opt.add_operation(Types.REF, Operations.NEW, [])
+
+        ops = opt.build_operations()
+        assert len(ops) == 0
+
+    def test_simple_new_escapes(self):
+        opt = Optimizer([Virtualize])
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [])
+        opt.add_operation(Types.VOID, Operations.RETURN, [p0])
 
         ops = opt.build_operations()
         assert len(ops) == 2

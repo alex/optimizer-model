@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 from .intbounds import IntUnbounded, ConstantIntBounds
-from .optimizations import OperationRecorder
 
 
 class Optimizer(object):
@@ -19,9 +18,12 @@ class Optimizer(object):
         return value
 
     def add_operation(self, tp, op, args):
+        return self.add_operation_at_optimizer(tp, op, args, self.first_optimizer)
+
+    def add_operation_at_optimizer(self, tp, op, args, optimizer):
         value = OperationValue(len(self.values), tp, op, args)
         self.values.append(value)
-        self.first_optimizer.handle(self, value)
+        optimizer.handle(self, value)
         return value
 
     def new_constant_int(self, intvalue):
@@ -102,3 +104,16 @@ class ConstantInt(BaseConstant):
 
     def getintbound(self):
         return ConstantIntBounds(self.intvalue)
+
+
+# TODO: needs to share a common base class with BaseOptimization
+class OperationRecorder(object):
+    def __init__(self):
+        super(OperationRecorder, self).__init__()
+        self.operations = []
+
+    def handle(self, optimizer, operation):
+        self.operations.append(operation)
+
+    def get_operations(self):
+        return self.operations

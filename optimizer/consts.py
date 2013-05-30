@@ -14,7 +14,11 @@ class Operations(Enum):
     INT_LT = 6
     INT_GT = 7
 
+    NEW = 8
+
 
 class Types(Enum):
     VOID = 0
     INT = 1
+    FLOAT = 2
+    REF = 3
