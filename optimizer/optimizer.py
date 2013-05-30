@@ -1,12 +1,13 @@
 from __future__ import absolute_import
 
+from .intbounds import IntUnbounded, ConstantIntBounds
 from .optimizations import OperationRecorder
 
 
 class Optimizer(object):
     def __init__(self, optimization_classes=[]):
         self.recorder = opt = OperationRecorder()
-        for cls in optimization_classes:
+        for cls in reversed(optimization_classes):
             opt = cls(opt)
         self.first_optimizer = opt
 
@@ -38,22 +39,29 @@ class Optimizer(object):
     def make_equal_to(self, val, newval):
         self.values[val.valuenum] = newval
 
+    def set_bounds(self, val, new_bounds):
+        self.values[val.valuenum] = val.update_bounds(new_bounds)
+
 
 class BaseValue(object):
     def is_constant(self):
         return False
 
 
-class NumberedValue(BaseValue):
-    def __init__(self, valuenum):
-        super(NumberedValue, self).__init__()
+class AbstractValue(BaseValue):
+    def __init__(self, valuenum, intbounds=None):
+        super(AbstractValue, self).__init__()
         self.valuenum = valuenum
+        self.intbounds = IntUnbounded() if intbounds is None else intbounds
 
     def getvalue(self, optimizer):
         return optimizer.values[self.valuenum]
 
+    def getintbound(self):
+        return self.intbounds
 
-class OperationValue(NumberedValue):
+
+class OperationValue(AbstractValue):
     def __init__(self, valuenum, tp, op, arguments):
         super(OperationValue, self).__init__(valuenum)
         self.tp = tp
@@ -61,10 +69,13 @@ class OperationValue(NumberedValue):
         self.arguments = arguments
 
 
-class InputValue(NumberedValue):
-    def __init__(self, valuenum, tp):
-        super(InputValue, self).__init__(valuenum)
+class InputValue(AbstractValue):
+    def __init__(self, valuenum, tp, intbounds=None):
+        super(InputValue, self).__init__(valuenum, intbounds)
         self.tp = tp
+
+    def update_bounds(self, bounds):
+        return InputValue(self.valuenum, self.tp, bounds)
 
 
 class BaseConstant(BaseValue):
@@ -82,3 +93,6 @@ class ConstantInt(BaseConstant):
 
     def getint(self):
         return self.intvalue
+
+    def getintbound(self):
+        return ConstantIntBounds(self.intvalue)

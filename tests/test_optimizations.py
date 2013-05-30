@@ -1,5 +1,5 @@
 from optimizer import Optimizer, Operations, Types
-from optimizer.optimizations import ConstantFold
+from optimizer.optimizations import ConstantFold, IntBounds, GuardPropagation
 
 
 class TestConstantFold(object):
@@ -22,3 +22,18 @@ class TestConstantFold(object):
         )
         ops = opt.build_operations()
         assert len(ops) == 1
+
+
+class TestIntBounds(object):
+    def test_lt(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Types.INT, Operations.INT_LT,
+            [i0, opt.new_constant_int(10)],
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i1])
+        opt.add_operation(Types.INT, Operations.INT_LT, [i0, opt.new_constant_int(15)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
