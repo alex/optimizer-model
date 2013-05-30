@@ -8,6 +8,7 @@ from .. import Operations
 class ConstantFold(BaseOptimization):
     op_map = {
         Operations.INT_ADD: operator.add,
+        Operations.INT_SUB: operator.sub,
     }
 
     def handle(self, optimizer, operation):

@@ -7,7 +7,8 @@ class Operations(Enum):
     GUARD_TRUE = 1
 
     INT_ADD = 2
-    INT_LT = 3
+    INT_SUB = 3
+    INT_LT = 4
 
 
 class Types(Enum):
