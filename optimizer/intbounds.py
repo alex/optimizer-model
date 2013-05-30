@@ -13,12 +13,12 @@ class BaseIntBounds(object):
 
     def make_lt(self, other):
         if other.has_upper() and (not self.has_upper() or other.get_upper() < self.get_upper()):
-            return self.replace(upper=other.get_upper())
+            return self.replace(upper=other.get_upper() - 1)
         return self
 
     def make_gt(self, other):
         if other.has_lower() and (not self.has_lower() or other.get_lower() > self.get_lower()):
-            return self.replace(lower=other.get_lower())
+            return self.replace(lower=other.get_lower() + 1)
         return self
 
 

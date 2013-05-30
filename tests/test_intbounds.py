@@ -8,12 +8,9 @@ class TestIntBounds(object):
 
         i2 = i0.make_gt(i1)
 
-        assert not i2.known_gt(i1)
-        assert not i2.known_lt(i1)
-
-        i3 = ConstantIntBounds(9)
-
-        assert i2.known_gt(i3)
+        assert i2.has_lower()
+        assert not i2.has_upper()
+        assert i2.get_lower() == 11
 
     def test_make_lt(self):
         i0 = IntUnbounded()
@@ -21,9 +18,6 @@ class TestIntBounds(object):
 
         i2 = i0.make_lt(i1)
 
-        assert not i2.known_gt(i1)
-        assert not i2.known_lt(i1)
-
-        i3 = ConstantIntBounds(11)
-
-        assert i2.known_lt(i3)
+        assert i2.has_upper()
+        assert not i2.has_lower()
+        assert i2.get_upper() == 9
