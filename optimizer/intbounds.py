@@ -66,6 +66,9 @@ class IntLowerBound(BaseIntBounds):
     def has_lower(self):
         return True
 
+    def has_upper(self):
+        return False
+
     def get_lower(self):
         return self.lower
 
@@ -74,6 +77,9 @@ class IntUpperBound(BaseIntBounds):
     def __init__(self, upper):
         super(IntUpperBound, self).__init__()
         self.upper = upper
+
+    def has_lower(self):
+        return False
 
     def has_upper(self):
         return True
