@@ -13,31 +13,27 @@ class BaseIntBounds(object):
 
     def make_lt(self, other):
         if other.has_upper() and (not self.has_upper() or other.get_upper() < self.get_upper()):
-            return self.replace(upper=other.get_upper() - 1)
+            return self.set_upper(other.get_upper() - 1)
         return self
 
     def make_gt(self, other):
         if other.has_lower() and (not self.has_lower() or other.get_lower() > self.get_lower()):
-            return self.replace(lower=other.get_lower() + 1)
+            return self.set_lower(other.get_lower() + 1)
         return self
 
 
 class IntUnbounded(BaseIntBounds):
-    def replace(self, lower=None, upper=None):
-        if upper is not None and lower is not None:
-            raise NotImplementedError
-        elif lower is not None:
-            return IntLowerBound(lower)
-        elif upper is not None:
-            return IntUpperBound(upper)
-        else:
-            raise NotImplementedError
-
     def has_lower(self):
         return False
 
     def has_upper(self):
         return False
+
+    def set_lower(self, lower):
+        return IntLowerBound(lower)
+
+    def set_upper(self, upper):
+        return IntUpperBound(upper)
 
 
 class ConstantIntBounds(BaseIntBounds):
@@ -72,6 +68,9 @@ class IntLowerBound(BaseIntBounds):
     def get_lower(self):
         return self.lower
 
+    def set_upper(self, upper):
+        return IntBound(self.lower, upper)
+
 
 class IntUpperBound(BaseIntBounds):
     def __init__(self, upper):
@@ -83,6 +82,28 @@ class IntUpperBound(BaseIntBounds):
 
     def has_upper(self):
         return True
+
+    def get_upper(self):
+        return self.upper
+
+    def set_lower(self, lower):
+        return IntBound(lower, self.upper)
+
+
+class IntBound(BaseIntBounds):
+    def __init__(self, lower, upper):
+        super(IntBound, self).__init__()
+        self.lower = lower
+        self.upper = upper
+
+    def has_lower(self):
+        return True
+
+    def has_upper(self):
+        return True
+
+    def get_lower(self):
+        return self.lower
 
     def get_upper(self):
         return self.upper
