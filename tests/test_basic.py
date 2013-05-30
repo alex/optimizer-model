@@ -8,7 +8,7 @@ class TestBasic(object):
         ops = opt.build_operations()
         assert len(ops) == 1
         assert ops[0].op == Operations.RETURN
-        assert ops[0].arguments == []
+        assert ops[0].getarglist() == []
 
     def test_inputs(self):
         opt = Optimizer()
@@ -19,4 +19,4 @@ class TestBasic(object):
 
         assert len(ops) == 1
         assert ops[0].op == Operations.RETURN
-        assert ops[0].arguments == [res]
+        assert ops[0].getarglist() == [res]
