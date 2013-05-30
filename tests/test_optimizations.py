@@ -46,3 +46,16 @@ class TestIntBounds(object):
 
         ops = opt.build_operations()
         assert len(ops) == 2
+
+    def test_gt(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Types.INT, Operations.INT_GT,
+            [i0, opt.new_constant_int(10)]
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i1])
+        opt.add_operation(Types.INT, Operations.INT_GT, [i0, opt.new_constant_int(5)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2

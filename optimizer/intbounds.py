@@ -2,6 +2,9 @@ class BaseIntBounds(object):
     def known_lt(self, other):
         return self.has_upper() and other.has_lower() and self.get_upper() < other.get_lower()
 
+    def known_gt(self, other):
+        return other.known_lt(self)
+
     def known_le(self, other):
         return self.has_upper() and other.has_lower() and self.get_upper() <= other.get_lower()
 
@@ -13,10 +16,22 @@ class BaseIntBounds(object):
             return self.replace(upper=other.get_upper())
         return self
 
+    def make_gt(self, other):
+        if other.has_lower() and (not self.has_lower() or other.get_lower() > self.get_lower()):
+            return self.replace(lower=other.get_lower())
+        return self
+
 
 class IntUnbounded(BaseIntBounds):
-    def replace(self, upper):
-        return IntUpperBound(upper)
+    def replace(self, lower=None, upper=None):
+        if upper is not None and lower is not None:
+            raise NotImplementedError
+        elif lower is not None:
+            return IntLowerBound(lower)
+        elif upper is not None:
+            return IntUpperBound(upper)
+        else:
+            raise NotImplementedError
 
     def has_lower(self):
         return False
@@ -41,6 +56,18 @@ class ConstantIntBounds(BaseIntBounds):
 
     def get_upper(self):
         return self.intvalue
+
+
+class IntLowerBound(BaseIntBounds):
+    def __init__(self, lower):
+        super(IntLowerBound, self).__init__()
+        self.lower = lower
+
+    def has_lower(self):
+        return True
+
+    def get_lower(self):
+        return self.lower
 
 
 class IntUpperBound(BaseIntBounds):

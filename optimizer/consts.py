@@ -9,6 +9,7 @@ class Operations(Enum):
     INT_ADD = 2
     INT_SUB = 3
     INT_LT = 4
+    INT_GT = 5
 
 
 class Types(Enum):
