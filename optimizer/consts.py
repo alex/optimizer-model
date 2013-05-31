@@ -16,6 +16,8 @@ class Operations(Enum):
 
     NEW = 8
 
+    SETFIELD = 9
+
 
 class Types(Enum):
     VOID = 0

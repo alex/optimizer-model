@@ -107,3 +107,13 @@ class TestVirtualize(object):
 
         ops = opt.build_operations()
         assert len(ops) == 2
+
+    def test_setfield(self):
+        opt = Optimizer([Virtualize])
+        i0 = opt.add_input(Types.INT)
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [])
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0])
+
+        ops = opt.build_operations()
+        assert len(ops) == 0

@@ -82,6 +82,9 @@ class InputValue(AbstractValue):
         super(InputValue, self).__init__(valuenum, intbounds)
         self.tp = tp
 
+    def is_virtual(self):
+        return False
+
     def update_bounds(self, bounds):
         return InputValue(self.valuenum, self.tp, bounds)
 
