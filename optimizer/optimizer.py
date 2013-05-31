@@ -17,10 +17,10 @@ class Optimizer(object):
         self.values.append(value)
         return value
 
-    def add_operation(self, tp, op, args, optimizer=None):
+    def add_operation(self, tp, op, args, descr=None, optimizer=None):
         if optimizer is None:
             optimizer = self.first_optimizer
-        value = OperationValue(len(self.values), tp, op, args)
+        value = OperationValue(len(self.values), tp, op, args, descr)
         self.values.append(value)
         optimizer.handle(self, value)
         return value
@@ -63,17 +63,21 @@ class AbstractValue(BaseValue):
 
 
 class OperationValue(AbstractValue):
-    def __init__(self, valuenum, tp, op, args):
+    def __init__(self, valuenum, tp, op, args, descr):
         super(OperationValue, self).__init__(valuenum)
         self.tp = tp
         self.op = op
         self.args = args
+        self.descr = descr
 
     def getarg(self, n):
         return self.args[n]
 
     def getarglist(self):
         return self.args
+
+    def getdescr(self):
+        return self.descr
 
 
 class InputValue(AbstractValue):

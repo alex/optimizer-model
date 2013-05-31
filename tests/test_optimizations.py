@@ -91,29 +91,33 @@ class TestIntBounds(object):
 
 
 class TestVirtualize(object):
-    def test_simple_new(self):
+    def test_simple_new(self, cpu):
         opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
 
-        opt.add_operation(Types.REF, Operations.NEW, [])
+        opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
 
         ops = opt.build_operations()
         assert len(ops) == 0
 
-    def test_simple_new_escapes(self):
+    def test_simple_new_escapes(self, cpu):
         opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
 
-        p0 = opt.add_operation(Types.REF, Operations.NEW, [])
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
         opt.add_operation(Types.VOID, Operations.RETURN, [p0])
 
         ops = opt.build_operations()
         assert len(ops) == 2
 
-    def test_setfield(self):
+    def test_setfield(self, cpu):
         opt = Optimizer([Virtualize])
         i0 = opt.add_input(Types.INT)
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
 
-        p0 = opt.add_operation(Types.REF, Operations.NEW, [])
-        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0])
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr)
 
         ops = opt.build_operations()
         assert len(ops) == 0
