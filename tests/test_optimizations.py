@@ -121,3 +121,16 @@ class TestVirtualize(object):
 
         ops = opt.build_operations()
         assert len(ops) == 0
+
+    def test_setfield_escapes(self, cpu):
+        opt = Optimizer([Virtualize])
+        i0 = opt.add_input(Types.INT)
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr)
+        opt.add_operation(Types.VOID, Operations.RETURN, [p0])
+
+        ops = opt.build_operations()
+        assert len(ops) == 3

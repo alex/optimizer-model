@@ -70,6 +70,9 @@ class OperationValue(AbstractValue):
         self.args = args
         self.descr = descr
 
+    def is_virtual(self):
+        return False
+
     def getarg(self, n):
         return self.args[n]
 
