@@ -17,10 +17,9 @@ class Optimizer(object):
         self.values.append(value)
         return value
 
-    def add_operation(self, tp, op, args):
-        return self.add_operation_at_optimizer(tp, op, args, self.first_optimizer)
-
-    def add_operation_at_optimizer(self, tp, op, args, optimizer):
+    def add_operation(self, tp, op, args, optimizer=None):
+        if optimizer is None:
+            optimizer = self.first_optimizer
         value = OperationValue(len(self.values), tp, op, args)
         self.values.append(value)
         optimizer.handle(self, value)

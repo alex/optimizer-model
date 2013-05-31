@@ -39,7 +39,7 @@ class VirtualValue(BaseValue):
         return True
 
     def force(self, optimizer, optimization):
-        p = optimizer.add_operation_at_optimizer(Types.REF, Operations.NEW, [], optimization)
+        p = optimizer.add_operation(Types.REF, Operations.NEW, [], optimizer=optimization)
         optimizer.make_equal_to(self.original_operation, p)
 
     def setfield(self, optimizer, value):
