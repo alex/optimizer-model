@@ -19,6 +19,18 @@ class Virtualize(BaseOptimization):
         else:
             return self.prev.handle(optimizer, operation)
 
+    @dispatcher.register(Operations.GETFIELD)
+    def optimize_GETFIELD(self, optimizer, operation):
+        value = optimizer.getvalue(operation.getarg(0))
+        if value.is_virtual():
+            res = value.getfield(operation.getdescr())
+            if res is not None:
+                optimizer.make_equal_to(operation, res)
+            else:
+                raise NotImplementedError("reading unset fields")
+        else:
+            return self.prev.handle(optimizer, operation)
+
     def optimize_default(self, optimizer, operation):
         for arg in operation.getarglist():
             value = optimizer.getvalue(arg)
@@ -49,6 +61,13 @@ class VirtualValue(BaseValue):
                 value = optimizer.getvalue(setfield.value)
                 optimizer.add_operation(Types.VOID, Operations.SETFIELD, [p, value], descr=setfield.field_descr)
                 seen_descrs.add(setfield.field_descr)
+            setfield = setfield.prev
+
+    def getfield(self, descr):
+        setfield = self.setfields
+        while setfield is not None:
+            if setfield.field_descr is descr:
+                return setfield.value
             setfield = setfield.prev
 
     def setfield(self, optimizer, field_descr, value):

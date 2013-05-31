@@ -16,7 +16,8 @@ class Operations(Enum):
 
     NEW = 8
 
-    SETFIELD = 9
+    GETFIELD = 9
+    SETFIELD = 10
 
 
 class Types(Enum):

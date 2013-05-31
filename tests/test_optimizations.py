@@ -134,3 +134,18 @@ class TestVirtualize(object):
 
         ops = opt.build_operations()
         assert len(ops) == 3
+
+    def test_get_setfield(self, cpu):
+        opt = Optimizer([Virtualize])
+        i0 = opt.add_input(Types.INT)
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr)
+        i1 = opt.add_operation(Types.INT, Operations.GETFIELD, [p0], descr=field_descr)
+
+        ops = opt.build_operations()
+        assert len(ops) == 0
+
+        assert opt.getvalue(i1) is i0
