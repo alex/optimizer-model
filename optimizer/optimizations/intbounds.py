@@ -32,25 +32,30 @@ class IntBounds(BaseOptimization):
         self.prev.handle(optimizer, operation)
         self.propogate_bounds(optimizer, operation.getarg(0))
 
+    @dispatcher.register(Operations.GUARD_FALSE)
+    def optimize_GUARD_FALSE(self, optimizer, operation):
+        self.prev.handle(optimizer, operation)
+        self.propogate_bounds(optimizer, operation.getarg(0))
+
     @bounds_dispatcher.register(Operations.INT_LT)
     def propogate_bounds_INT_LT(self, optimizer, operation):
         value = optimizer.getvalue(operation)
         if value.is_constant():
+            [arg1, arg2] = operation.getarglist()
             if value.getint():
-                [arg1, arg2] = operation.getarglist()
                 optimizer.set_bounds(arg1, arg1.getintbound().make_lt(arg2.getintbound()))
             else:
-                raise NotImplementedError("handle the reverse")
+                optimizer.set_bounds(arg1, arg1.getintbound().make_ge(arg2.getintbound()))
 
     @bounds_dispatcher.register(Operations.INT_GT)
     def propogate_bounds_INT_GT(self, optimizer, operation):
         value = optimizer.getvalue(operation)
         if value.is_constant():
+            [arg1, arg2] = operation.getarglist()
             if value.getint():
-                [arg1, arg2] = operation.getarglist()
                 optimizer.set_bounds(arg1, arg1.getintbound().make_gt(arg2.getintbound()))
             else:
-                raise NotImplementedError("handle the reverse")
+                optimizer.set_bounds(arg1, arg1.getintbound().make_le(arg2.getintbound()))
 
     handle = dispatcher.build_handler()
     propogate_bounds = bounds_dispatcher.build_dispatcher()

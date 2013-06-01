@@ -61,6 +61,18 @@ class TestGuardPropogation(object):
 
         assert opt.getvalue(i0).getint() == 0
 
+    def test_known_guard_true(self):
+        opt = Optimizer([GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i0])
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i0])
+
+        ops = opt.build_operations()
+        assert len(ops) == 1
+
+        assert opt.getvalue(i0).getint() == 1
+
 
 class TestIntBounds(object):
     def test_lt(self):
@@ -76,6 +88,23 @@ class TestIntBounds(object):
         ops = opt.build_operations()
         assert len(ops) == 2
 
+    def test_lt_reverse(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Types.INT, Operations.INT_GT,
+            [i0, opt.new_constant_int(5)]
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i1])
+        i2 = opt.add_operation(Types.INT, Operations.INT_LT,
+            [i0, opt.new_constant_int(3)]
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_FALSE, [i2])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+        assert opt.getvalue(i2).getint() == 0
+
     def test_gt(self):
         opt = Optimizer([IntBounds, GuardPropagation])
         i0 = opt.add_input(Types.INT)
@@ -88,6 +117,23 @@ class TestIntBounds(object):
 
         ops = opt.build_operations()
         assert len(ops) == 2
+
+    def test_gt_reverse(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Types.INT, Operations.INT_LT,
+            [i0, opt.new_constant_int(5)]
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_TRUE, [i1])
+        i2 = opt.add_operation(Types.INT, Operations.INT_GT,
+            [i0, opt.new_constant_int(7)]
+        )
+        opt.add_operation(Types.VOID, Operations.GUARD_FALSE, [i2])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+        assert opt.getvalue(i2).getint() == 0
 
 
 class TestVirtualize(object):
@@ -149,3 +195,36 @@ class TestVirtualize(object):
         assert len(ops) == 0
 
         assert opt.getvalue(i1) is i0
+
+    def test_get_setfield_input(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
+        i0 = opt.add_input(Types.INT)
+        p0 = opt.add_input(Types.REF)
+
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr)
+        opt.add_operation(Types.INT, Operations.GETFIELD, [p0], descr=field_descr)
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+
+    def test_multiple_setfields(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr1 = cpu.new_field(struct_descr)
+        field_descr2 = cpu.new_field(struct_descr)
+        i0 = opt.add_input(Types.INT)
+        i1 = opt.add_input(Types.INT)
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr1)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i1], descr=field_descr2)
+        i2 = opt.add_operation(Types.INT, Operations.GETFIELD, [p0], descr=field_descr1)
+        i3 = opt.add_operation(Types.INT, Operations.GETFIELD, [p0], descr=field_descr2)
+
+        ops = opt.build_operations()
+        assert len(ops) == 0
+
+        assert opt.getvalue(i2) is i0
+        assert opt.getvalue(i3) is i1

@@ -16,9 +16,19 @@ class BaseIntBounds(object):
             return self.set_upper(other.get_upper() - 1)
         return self
 
+    def make_le(self, other):
+        if other.has_upper() and (not self.has_upper() or other.get_upper() < self.get_upper()):
+            return self.set_upper(other.get_upper())
+        return self
+
     def make_gt(self, other):
         if other.has_lower() and (not self.has_lower() or other.get_lower() > self.get_lower()):
             return self.set_lower(other.get_lower() + 1)
+        return self
+
+    def make_ge(self, other):
+        if other.has_lower() and (not self.has_lower() or other.get_lower() > self.get_lower()):
+            return self.set_lower(other.get_lower())
         return self
 
 

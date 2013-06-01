@@ -30,12 +30,20 @@ class GuardPropagation(BaseOptimization):
 
     @dispatcher.register(Operations.GUARD_TRUE)
     def optimize_GUARD_TRUE(self, optimizer, operation):
-        self.prev.handle(optimizer, operation)
-        optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(1))
+        arg = optimizer.getvalue(operation.getarg(0))
+        if arg.is_constant():
+            assert arg.getint()
+        else:
+            self.prev.handle(optimizer, operation)
+            optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(1))
 
     @dispatcher.register(Operations.GUARD_FALSE)
     def optimize_GUARD_FALSE(self, optimizer, operation):
-        self.prev.handle(optimizer, operation)
-        optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(0))
+        arg = optimizer.getvalue(operation.getarg(0))
+        if arg.is_constant():
+            assert not arg.getint()
+        else:
+            self.prev.handle(optimizer, operation)
+            optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(0))
 
     handle = dispatcher.build_handler()
