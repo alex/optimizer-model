@@ -228,3 +228,16 @@ class TestVirtualize(object):
 
         assert opt.getvalue(i2) is i0
         assert opt.getvalue(i3) is i1
+
+    def test_read_unsetfield(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
+
+        p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        i0 = opt.add_operation(Types.INT, Operations.GETFIELD, [p0], descr=field_descr)
+
+        ops = opt.build_operations()
+        assert len(ops) == 0
+
+        assert opt.getvalue(i0).getint() == 0

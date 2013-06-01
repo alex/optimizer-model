@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+from .consts import Types
 from .intbounds import IntUnbounded, ConstantIntBounds
 
 
@@ -27,6 +28,10 @@ class Optimizer(object):
 
     def new_constant_int(self, intvalue):
         return ConstantInt(intvalue)
+
+    def new_empty_constant(self, tp):
+        assert tp == Types.INT
+        return self.new_constant_int(0)
 
     def build_operations(self):
         return self.recorder.get_operations()

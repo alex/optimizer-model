@@ -27,7 +27,7 @@ class Virtualize(BaseOptimization):
             if res is not None:
                 optimizer.make_equal_to(operation, res)
             else:
-                raise NotImplementedError("reading unset fields")
+                optimizer.make_equal_to(operation, optimizer.new_empty_constant(operation.tp))
         else:
             return self.prev.handle(optimizer, operation)
 
