@@ -11,6 +11,8 @@ class ConstantFold(BaseOptimization):
         Operations.INT_SUB: operator.sub,
 
         Operations.INT_EQ: operator.eq,
+        Operations.INT_LT: operator.lt,
+        Operations.INT_GT: operator.gt,
     }
 
     def handle(self, optimizer, operation):
