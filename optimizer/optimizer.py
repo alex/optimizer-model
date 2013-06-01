@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from .consts import Types
+from . import Types
 from .intbounds import IntUnbounded, ConstantIntBounds
 
 
