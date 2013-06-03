@@ -205,6 +205,10 @@ class HashCollisionNode(Node):
                 return HashCollisionNode(self.hash_val, self.count, data), True
         return BitmapIndexedNode(bitpos(self.hash_val, shift), [None, self]).setitem(shift, key, hash_val, val)
 
+    def iteritems(self):
+        for i in xrange(0, len(self.data), 2):
+            yield self.data[i], self.data[i + 1]
+
 
 def create_node(shift, key1, val1, key2, hash_val2, val2):
     hash_val1 = hash(key1)
