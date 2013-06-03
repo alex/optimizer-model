@@ -71,6 +71,9 @@ class TestPersistentDict(object):
         assert pd.getitem(None) == 3
         pd = pd.setitem(None, 3)
         assert pd.getitem(None) == 3
+        pd = pd.delitem(None)
+        with pytest.raises(KeyError):
+            pd.delitem(None)
 
     def test_bool(self):
         assert not PersistentDict()
@@ -93,3 +96,20 @@ class TestPersistentDict(object):
 
         pd = PersistentDict().setitem(HashKey(0, "a"), 3).setitem(HashKey(0, "b"), 4)
         assert list(pd.iteritems()) == [(HashKey(0, "a"), 3), (HashKey(0, "b"), 4)]
+
+    def test_delitem(self):
+        pd = PersistentDict()
+        with pytest.raises(KeyError):
+            pd.delitem("abc")
+        pd = pd.setitem("abc", 3)
+        pd = pd.delitem("abc")
+        assert "abc" not in pd
+
+        pd = PersistentDict().setitem(HashKey(0, "a"), 3).setitem(HashKey(0, "b"), 4)
+        pd = pd.delitem(HashKey(0, "a")).delitem(HashKey(0, "b"))
+        assert HashKey(0, "a") not in pd
+        assert HashKey(0, "b") not in pd
+
+        pd = PersistentDict().setitem("a", 1).setitem("b", 3).delitem("a")
+        assert "a" not in pd
+        assert "b" in pd

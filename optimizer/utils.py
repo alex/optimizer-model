@@ -47,6 +47,17 @@ class PersistentDict(object):
             return self
         return self._new(self._count + 1 if added else self._count, new_root, self._has_none, self._none_val)
 
+    def delitem(self, key):
+        if key is None:
+            if self._has_none:
+                return self._new(self._count - 1, self._root, False, None)
+            else:
+                raise KeyError(key)
+        if self._root is None:
+            raise KeyError(key)
+        new_root = self._root.delitem(0, key, hash(key))
+        return self._new(self._count - 1, new_root, self._has_none, self._none_val)
+
     def get(self, key, default=None):
         try:
             return self.getitem(key)
@@ -132,6 +143,29 @@ class BitmapIndexedNode(Node):
                 new_data[2 * (idx + 1):2 * (n - idx)] = self.data[2 * idx:2 * (n - idx)]
                 return BitmapIndexedNode(self.bitmap | bit, new_data), True
 
+    def delitem(self, shift, key, hash_val):
+        bit = bitpos(hash_val, shift)
+        if (self.bitmap & bit) == 0:
+            raise KeyError(key)
+        idx = self.index(bit)
+        key_or_none = self.data[2 * idx]
+        val_or_node = self.data[2 * idx + 1]
+        if key_or_none is None:
+            n = val_or_node.delitem(shift + 5, key, hash_val)
+            if n is not None:
+                data = self.data[:]
+                data[2 * idx + 1] = n
+                return BitmapIndexedNode(self.bitmap, data)
+            if self.bitmap == bit:
+                return None
+            data = self.data[:2 * idx] + self.data[2 * idx + 2:]
+            return BitmapIndexedNode(self.bitmap ^ bit, data)
+        if key == key_or_none:
+            data = self.data[:]
+            data = self.data[:2 * idx] + self.data[2 * idx + 2:]
+            return BitmapIndexedNode(self.bitmap ^ bit, data)
+        raise KeyError(key)
+
     def iteritems(self):
         for i in xrange(0, len(self.data), 2):
             if self.data[i] is None:
@@ -204,6 +238,15 @@ class HashCollisionNode(Node):
                 data[idx + 1] = val
                 return HashCollisionNode(self.hash_val, self.count, data), True
         return BitmapIndexedNode(bitpos(self.hash_val, shift), [None, self]).setitem(shift, key, hash_val, val)
+
+    def delitem(self, shift, key, hash_val):
+        idx = self.find_index(key)
+        if idx < 0:
+            raise KeyError(key)
+        if self.count == 0:
+            return None
+        data = self.data[:idx] + self.data[idx + 2:]
+        return HashCollisionNode(self.hash_val, self.count - 1, data)
 
     def iteritems(self):
         for i in xrange(0, len(self.data), 2):
