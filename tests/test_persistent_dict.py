@@ -32,7 +32,7 @@ class TestPersistentDict(object):
         assert pd.getitem("abc") == 10
 
     def test_setitem_matching_hash(self):
-        pd = PersistentDict().setitem(HashKey(0, "a"), 10).setitem(HashKey(0, "b"), 20).setitem(HashKey(0, "c"), 30)
+        pd = PersistentDict().setitem(HashKey(0, "a"), 10).setitem(HashKey(0, "b"), 20).setitem(HashKey(0, "c"), 30).setitem(HashKey(0, "a"), 10)
         assert pd.getitem(HashKey(0, "a")) == 10
         assert pd.getitem(HashKey(0, "b")) == 20
         assert pd.getitem(HashKey(0, "c")) == 30
