@@ -2,7 +2,7 @@ from .base import BaseOptimization
 from .utils import OpDispatcher
 from .. import Operations, Types
 from ..optimizer import BaseValue
-from ..utils import PersistentDict
+from ..utils.persistent_dict import PersistentDict
 
 
 class Virtualize(BaseOptimization):

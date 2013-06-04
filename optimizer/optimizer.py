@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from . import Types
-from .intbounds import IntUnbounded, ConstantIntBounds
+from .utils.intbounds import IntUnbounded, ConstantIntBounds
 
 
 class Optimizer(object):

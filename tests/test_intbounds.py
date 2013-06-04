@@ -1,4 +1,4 @@
-from optimizer.intbounds import IntUnbounded, ConstantIntBounds
+from optimizer.utils.intbounds import IntUnbounded, ConstantIntBounds
 
 
 class TestIntBounds(object):

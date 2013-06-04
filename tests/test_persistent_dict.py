@@ -1,6 +1,6 @@
 import pytest
 
-from optimizer.utils import PersistentDict
+from optimizer.utils.persistent_dict import PersistentDict
 
 
 class HashKey(object):
