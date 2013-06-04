@@ -43,11 +43,11 @@ class Virtualize(BaseOptimization):
 
 
 class VirtualValue(BaseValue):
-    def __init__(self, original_operation, struct_descr, setfields=None):
+    def __init__(self, original_operation, struct_descr, setfields=PersistentDict()):
         super(VirtualValue, self).__init__()
         self.original_operation = original_operation
         self.struct_descr = struct_descr
-        self.setfields = setfields or PersistentDict()
+        self.setfields = setfields
 
     def is_virtual(self):
         return True
