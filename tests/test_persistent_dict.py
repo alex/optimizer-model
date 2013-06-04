@@ -90,12 +90,46 @@ class TestPersistentDict(object):
         assert "a" in pd
         assert "b" not in pd
 
+    def test_iter(self):
+        pd = PersistentDict()
+        itr = iter(pd)
+        with pytest.raises(StopIteration):
+            itr.next()
+        pd = pd.setitem("a", 3)
+        itr = iter(pd)
+        assert itr.next() == "a"
+
     def test_iteritems(self):
         pd = PersistentDict().setitem("a", 3).setitem("b", 4)
         assert list(pd.iteritems()) == [("a", 3), ("b", 4)]
 
         pd = PersistentDict().setitem(HashKey(0, "a"), 3).setitem(HashKey(0, "b"), 4)
         assert list(pd.iteritems()) == [(HashKey(0, "a"), 3), (HashKey(0, "b"), 4)]
+
+    def test_keys(self):
+        pd = PersistentDict()
+        assert pd.keys() == []
+        assert pd.setitem("a", 3).keys() == ["a"]
+
+    def test_values(self):
+        pd = PersistentDict()
+        assert pd.values() == []
+        assert pd.setitem("a", 3).values() == [3]
+
+    def test_items(self):
+        pd = PersistentDict()
+        assert pd.items() == []
+        assert pd.setitem("a", 3).items() == [("a", 3)]
+
+    def test_iterkeys(self):
+        pd = PersistentDict()
+        assert list(pd.iterkeys()) == []
+        assert list(pd.setitem("a", 3).iterkeys()) == ["a"]
+
+    def test_itervalues(self):
+        pd = PersistentDict()
+        assert list(pd.itervalues()) == []
+        assert list(pd.setitem("a", 3).itervalues()) == [3]
 
     def test_delitem(self):
         pd = PersistentDict()

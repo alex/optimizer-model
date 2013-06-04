@@ -18,6 +18,9 @@ class PersistentDict(object):
     def __len__(self):
         return self._count
 
+    def __iter__(self):
+        return self.iterkeys()
+
     def __contains__(self, key):
         try:
             self.getitem(key)
@@ -64,10 +67,27 @@ class PersistentDict(object):
         except KeyError:
             return default
 
+    def iterkeys(self):
+        for k, v in self.iteritems():
+            yield k
+
+    def itervalues(self):
+        for k, v in self.iteritems():
+            yield v
+
     def iteritems(self):
         if self._root is None:
             return iter([])
         return self._root.iteritems()
+
+    def keys(self):
+        return [k for k, v in self.iteritems()]
+
+    def values(self):
+        return [v for k, v in self.iteritems()]
+
+    def items(self):
+        return list(self.iteritems())
 
 
 class Node(object):
