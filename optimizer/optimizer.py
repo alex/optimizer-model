@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from . import Types
-from .utils.intbounds import IntUnbounded, ConstantIntBounds
+from .utils.intbounds import IntBounds
 
 
 class Optimizer(object):
@@ -46,7 +46,8 @@ class Optimizer(object):
         self.values[val.valuenum] = newval
 
     def set_bounds(self, val, new_bounds):
-        self.values[val.valuenum] = val.update_bounds(new_bounds)
+        if isinstance(val, AbstractValue):
+            self.values[val.valuenum] = val.update_bounds(new_bounds)
 
 
 class BaseValue(object):
@@ -58,7 +59,7 @@ class AbstractValue(BaseValue):
     def __init__(self, valuenum, intbounds=None):
         super(AbstractValue, self).__init__()
         self.valuenum = valuenum
-        self.intbounds = IntUnbounded() if intbounds is None else intbounds
+        self.intbounds = IntBounds() if intbounds is None else intbounds
 
     def getvalue(self, optimizer):
         return optimizer.values[self.valuenum]
@@ -117,7 +118,7 @@ class ConstantInt(BaseConstant):
         return self.intvalue
 
     def getintbound(self):
-        return ConstantIntBounds(self.intvalue)
+        return IntBounds(self.intvalue, self.intvalue)
 
 
 # TODO: needs to share a common base class with BaseOptimization

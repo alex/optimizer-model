@@ -44,8 +44,10 @@ class IntBounds(BaseOptimization):
             [arg1, arg2] = operation.getarglist()
             if value.getint():
                 optimizer.set_bounds(arg1, arg1.getintbound().make_lt(arg2.getintbound()))
+                optimizer.set_bounds(arg2, arg2.getintbound().make_ge(arg1.getintbound()))
             else:
                 optimizer.set_bounds(arg1, arg1.getintbound().make_ge(arg2.getintbound()))
+                optimizer.set_bounds(arg2, arg2.getintbound().make_lt(arg1.getintbound()))
 
     @bounds_dispatcher.register(Operations.INT_GT)
     def propogate_bounds_INT_GT(self, optimizer, operation):
@@ -54,8 +56,10 @@ class IntBounds(BaseOptimization):
             [arg1, arg2] = operation.getarglist()
             if value.getint():
                 optimizer.set_bounds(arg1, arg1.getintbound().make_gt(arg2.getintbound()))
+                optimizer.set_bounds(arg2, arg2.getintbound().make_le(arg1.getintbound()))
             else:
                 optimizer.set_bounds(arg1, arg1.getintbound().make_le(arg2.getintbound()))
+                optimizer.set_bounds(arg2, arg2.getintbound().make_gt(arg1.getintbound()))
 
     handle = dispatcher.build_handler()
     propogate_bounds = bounds_dispatcher.build_dispatcher()
