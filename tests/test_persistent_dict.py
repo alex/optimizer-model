@@ -61,6 +61,8 @@ class TestPersistentDict(object):
         assert len(pd) == 2
         assert HashKey(0x17, "a") in pd
         assert HashKey(0x37, "b") in pd
+        assert HashKey(0x17, "c") not in pd
+        assert HashKey(0x37, "c") not in pd
 
     def test_setitem_same_value(self):
         pd = PersistentDict().setitem("abc", 3).setitem("abc", 3)
@@ -163,3 +165,19 @@ class TestPersistentDict(object):
         pd = PersistentDict().setitem("a", 1).setitem("b", 3).delitem("a")
         assert "a" not in pd
         assert "b" in pd
+
+    def test_delitem_hash_window_collision(self):
+        pd = PersistentDict().setitem(HashKey(0x17, "a"), 2)
+        with pytest.raises(KeyError):
+            pd.delitem(HashKey(0x37, "b"))
+
+    def test_delitem_many(self):
+        pd = PersistentDict()
+        for i in xrange(25):
+            pd = pd.setitem(i, i)
+        with pytest.raises(KeyError):
+            pd.delitem(26)
+        for i in xrange(25):
+            pd = pd.delitem(i)
+        for i in xrange(25):
+            assert i not in pd

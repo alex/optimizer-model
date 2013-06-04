@@ -224,6 +224,24 @@ class ArrayNode(Node):
         data[idx] = n
         return ArrayNode(self.count, data), True
 
+    def delitem(self, shift, key, hash_val):
+        idx = mask(hash_val, shift)
+        node = self.data[idx]
+        if node is None:
+            raise KeyError(key)
+        n = node.delitem(shift + 5, key, hash_val)
+        if n is None:
+            if self.count < 8:
+                raise NotImplementedError
+            else:
+                data = self.data[:]
+                data[idx] = n
+                return ArrayNode(self.count - 1, data)
+        else:
+            data = self.data[:]
+            data[idx] = n
+            return ArrayNode(self.count, data)
+
 
 class HashCollisionNode(Node):
     def __init__(self, hash_val, count, data):
