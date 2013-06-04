@@ -2,22 +2,24 @@ from flufl.enum import Enum
 
 
 class Operations(Enum):
-    RETURN = 0
+    LABEL = 0
+    JUMP = 1
+    FINISH = 2
 
-    GUARD_TRUE = 1
-    GUARD_FALSE = 2
+    GUARD_TRUE = 3
+    GUARD_FALSE = 4
 
-    INT_ADD = 3
-    INT_SUB = 4
+    INT_ADD = 5
+    INT_SUB = 6
 
-    INT_EQ = 5
-    INT_LT = 6
-    INT_GT = 7
+    INT_EQ = 7
+    INT_LT = 8
+    INT_GT = 9
 
-    NEW = 8
+    NEW = 10
 
-    GETFIELD = 9
-    SETFIELD = 10
+    GETFIELD = 11
+    SETFIELD = 12
 
 
 class Types(Enum):

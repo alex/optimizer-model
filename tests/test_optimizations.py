@@ -151,7 +151,7 @@ class TestVirtualize(object):
         struct_descr = cpu.new_struct()
 
         p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
-        opt.add_operation(Types.VOID, Operations.RETURN, [p0])
+        opt.add_operation(Types.VOID, Operations.FINISH, [p0])
 
         ops = opt.build_operations()
         assert len(ops) == 2
@@ -176,7 +176,7 @@ class TestVirtualize(object):
 
         p0 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
         opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, i0], descr=field_descr)
-        opt.add_operation(Types.VOID, Operations.RETURN, [p0])
+        opt.add_operation(Types.VOID, Operations.FINISH, [p0])
 
         ops = opt.build_operations()
         assert len(ops) == 3
