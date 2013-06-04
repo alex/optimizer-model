@@ -31,7 +31,7 @@ class TestPersistentDict(object):
         pd = PersistentDict().setitem("abc", 3).setitem("abc", 10)
         assert pd.getitem("abc") == 10
 
-    def test_setitem_matching_hash(self):
+    def test_setitem_hash_collision(self):
         pd = PersistentDict().setitem(HashKey(0, "a"), 10).setitem(HashKey(0, "b"), 20).setitem(HashKey(0, "c"), 30).setitem(HashKey(0, "a"), 10)
         assert pd.getitem(HashKey(0, "a")) == 10
         assert pd.getitem(HashKey(0, "b")) == 20
@@ -55,6 +55,12 @@ class TestPersistentDict(object):
         for i in xrange(25):
             pd = pd.delitem(HashKey(0, i))
         assert len(pd) == 0
+
+    def test_setitem_hash_window_collision(self):
+        pd = PersistentDict().setitem(HashKey(0x17, "a"), 1).setitem(HashKey(0x37, "b"), 2)
+        assert len(pd) == 2
+        assert HashKey(0x17, "a") in pd
+        assert HashKey(0x37, "b") in pd
 
     def test_setitem_same_value(self):
         pd = PersistentDict().setitem("abc", 3).setitem("abc", 3)
