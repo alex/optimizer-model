@@ -123,12 +123,12 @@ class BitmapIndexedNode(Node):
             key_or_none = self.data[2 * idx]
             val_or_node = self.data[2 * idx + 1]
             if key_or_none is None:
-                n, _ = val_or_node.setitem(shift + 5, key, hash_val, val)
+                n, added = val_or_node.setitem(shift + 5, key, hash_val, val)
                 if n is val_or_node:
                     return self, False
                 data = self.data[:]
                 data[2 * idx + 1] = n
-                return BitmapIndexedNode(self.bitmap, data), False
+                return BitmapIndexedNode(self.bitmap, data), added
             if key == key_or_none:
                 if val == val_or_node:
                     return self, False
@@ -250,7 +250,7 @@ class HashCollisionNode(Node):
         if hash_val == self.hash_val:
             idx = self.find_index(key)
             if idx < 0:
-                return HashCollisionNode(self.hash_val, self.count + 1, self.data + [key, val]), False
+                return HashCollisionNode(self.hash_val, self.count + 1, self.data + [key, val]), True
             elif self.data[idx + 1] == val:
                 return self, False
             else:

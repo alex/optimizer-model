@@ -46,6 +46,16 @@ class TestPersistentDict(object):
         for i in xrange(25):
             assert i in pd
 
+    def test_setitem_many_collision(self):
+        pd = PersistentDict()
+        for i in xrange(25):
+            pd = pd.setitem(HashKey(0, i), i)
+        for i in xrange(25):
+            assert HashKey(0, i) in pd
+        for i in xrange(25):
+            pd = pd.delitem(HashKey(0, i))
+        assert len(pd) == 0
+
     def test_setitem_same_value(self):
         pd = PersistentDict().setitem("abc", 3).setitem("abc", 3)
         assert pd.getitem("abc") == 3
