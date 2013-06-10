@@ -241,3 +241,16 @@ class TestVirtualize(object):
         assert len(ops) == 0
 
         assert opt.getvalue(i0).getint() == 0
+
+    def test_setfield_virtual_on_nonvritual(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr)
+
+        p0 = opt.add_input(Types.REF)
+
+        p1 = opt.add_operation(Types.REF, Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Types.VOID, Operations.SETFIELD, [p0, p1], descr=field_descr)
+
+        ops = opt.build_operations()
+        assert len(ops) == 2

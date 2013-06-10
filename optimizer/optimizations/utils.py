@@ -23,5 +23,5 @@ class OpDispatcher(object):
 
     def build_handler(self):
         def handler_default(self, optimizer, operation):
-            return self.prev.handle(optimizer, operation)
+            return self.handle_back(optimizer, operation)
         return self.build_dispatcher(default=handler_default)

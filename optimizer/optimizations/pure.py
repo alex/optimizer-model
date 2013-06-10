@@ -22,7 +22,7 @@ class ConstantFold(BaseOptimization):
                 res = self.op_map[operation.op](*(arg.getint() for arg in args))
                 optimizer.make_equal_to(operation, optimizer.new_constant_int(res))
                 return
-        self.prev.handle(optimizer, operation)
+        self.handle_back(optimizer, operation)
 
 
 class GuardPropagation(BaseOptimization):
@@ -34,7 +34,7 @@ class GuardPropagation(BaseOptimization):
         if arg.is_constant():
             assert arg.getint()
         else:
-            self.prev.handle(optimizer, operation)
+            self.handle_back(optimizer, operation)
             optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(1))
 
     @dispatcher.register(Operations.GUARD_FALSE)
@@ -43,7 +43,7 @@ class GuardPropagation(BaseOptimization):
         if arg.is_constant():
             assert not arg.getint()
         else:
-            self.prev.handle(optimizer, operation)
+            self.handle_back(optimizer, operation)
             optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(0))
 
     handle = dispatcher.build_handler()

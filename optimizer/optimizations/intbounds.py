@@ -15,7 +15,7 @@ class IntBounds(BaseOptimization):
         elif lhs.getintbound().known_ge(rhs.getintbound()) or lhs is rhs:
             optimizer.make_equal_to(operation, optimizer.new_constant_int(0))
         else:
-            self.prev.handle(optimizer, operation)
+            self.handle_back(optimizer, operation)
 
     @dispatcher.register(Operations.INT_GT)
     def optimize_INT_GT(self, optimizer, operation):
@@ -25,16 +25,16 @@ class IntBounds(BaseOptimization):
         elif lhs.getintbound().known_le(rhs.getintbound()) or lhs is rhs:
             optimizer.make_equal_to(operation, optimizer.new_constant_int(0))
         else:
-            self.prev.handle(optimizer, operation)
+            self.handle_back(optimizer, operation)
 
     @dispatcher.register(Operations.GUARD_TRUE)
     def optimize_GUARD_TRUE(self, optimizer, operation):
-        self.prev.handle(optimizer, operation)
+        self.handle_back(optimizer, operation)
         self.propogate_bounds(optimizer, operation.getarg(0))
 
     @dispatcher.register(Operations.GUARD_FALSE)
     def optimize_GUARD_FALSE(self, optimizer, operation):
-        self.prev.handle(optimizer, operation)
+        self.handle_back(optimizer, operation)
         self.propogate_bounds(optimizer, operation.getarg(0))
 
     @bounds_dispatcher.register(Operations.INT_LT)

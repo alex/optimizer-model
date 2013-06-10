@@ -18,7 +18,7 @@ class Virtualize(BaseOptimization):
         if value.is_virtual():
             value.setfield(optimizer, operation.getdescr(), optimizer.getvalue(operation.getarg(1)))
         else:
-            return self.prev.handle(optimizer, operation)
+            return self.handle_back(optimizer, operation)
 
     @dispatcher.register(Operations.GETFIELD)
     def optimize_GETFIELD(self, optimizer, operation):
@@ -30,16 +30,16 @@ class Virtualize(BaseOptimization):
             else:
                 optimizer.make_equal_to(operation, optimizer.new_empty_constant(operation.tp))
         else:
-            return self.prev.handle(optimizer, operation)
+            return self.handle_back(optimizer, operation)
 
-    def optimize_default(self, optimizer, operation):
+    def handle_back(self, optimizer, operation):
         for arg in operation.getarglist():
             value = optimizer.getvalue(arg)
             if value.is_virtual():
                 value.force(optimizer, self.prev)
-        return self.prev.handle(optimizer, operation)
+        return super(Virtualize, self).handle_back(optimizer, operation)
 
-    handle = dispatcher.build_dispatcher(default=optimize_default)
+    handle = dispatcher.build_handler()
 
 
 class VirtualValue(BaseValue):
@@ -53,7 +53,7 @@ class VirtualValue(BaseValue):
         return True
 
     def force(self, optimizer, optimization):
-        p = optimizer.add_operation(Types.REF, Operations.NEW, [], optimizer=optimization)
+        p = optimizer.add_operation(Types.REF, Operations.NEW, [], optimization=optimization)
         optimizer.make_equal_to(self.original_operation, p)
         for descr, value in self.setfields.iteritems():
             value = optimizer.getvalue(value)

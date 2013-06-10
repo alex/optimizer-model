@@ -9,7 +9,7 @@ class Optimizer(object):
         self.recorder = opt = OperationRecorder()
         for cls in reversed(optimization_classes):
             opt = cls(opt)
-        self.first_optimizer = opt
+        self.first_optimization = opt
 
         self.values = []
 
@@ -18,12 +18,12 @@ class Optimizer(object):
         self.values.append(value)
         return value
 
-    def add_operation(self, tp, op, args, descr=None, optimizer=None):
-        if optimizer is None:
-            optimizer = self.first_optimizer
+    def add_operation(self, tp, op, args, descr=None, optimization=None):
+        if optimization is None:
+            optimization = self.first_optimization
         value = OperationValue(len(self.values), tp, op, args, descr)
         self.values.append(value)
-        optimizer.handle(self, value)
+        optimization.handle(self, value)
         return value
 
     def new_constant_int(self, intvalue):
