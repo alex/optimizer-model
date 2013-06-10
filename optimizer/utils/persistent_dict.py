@@ -300,7 +300,6 @@ def create_node(shift, key1, val1, key2, hash_val2, val2):
     return node
 
 
-
 def bitpos(hash_val, shift):
     return 1 << mask(hash_val, shift)
 
