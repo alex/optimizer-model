@@ -112,10 +112,10 @@ class TestPersistentDict(object):
         pd = PersistentDict()
         itr = iter(pd)
         with pytest.raises(StopIteration):
-            itr.next()
+            next(itr)
         pd = pd.setitem("a", 3)
         itr = iter(pd)
-        assert itr.next() == "a"
+        assert next(itr) == "a"
 
     def test_iteritems(self):
         pd = PersistentDict().setitem("a", 3).setitem("b", 4)
