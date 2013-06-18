@@ -251,7 +251,7 @@ class HashCollisionNode(Node):
         self.data = data
 
     def find_index(self, key):
-        for i in xrange(0, 2 * self.count, 2):
+        for i in range(0, 2 * self.count, 2):
             if key == self.data[i]:
                 return i
         return -1
