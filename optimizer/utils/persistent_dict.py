@@ -287,7 +287,7 @@ class HashCollisionNode(Node):
         return HashCollisionNode(self.hash_val, self.count - 1, data)
 
     def iteritems(self):
-        for i in xrange(0, len(self.data), 2):
+        for i in range(0, len(self.data), 2):
             yield self.data[i], self.data[i + 1]
 
 
