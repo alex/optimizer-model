@@ -41,18 +41,18 @@ class TestPersistentDict(object):
 
     def test_setitem_many(self):
         pd = PersistentDict()
-        for i in xrange(25):
+        for i in range(25):
             pd = pd.setitem(i, i)
-        for i in xrange(25):
+        for i in range(25):
             assert i in pd
 
     def test_setitem_many_collision(self):
         pd = PersistentDict()
-        for i in xrange(25):
+        for i in range(25):
             pd = pd.setitem(HashKey(0, i), i)
-        for i in xrange(25):
+        for i in range(25):
             assert HashKey(0, i) in pd
-        for i in xrange(25):
+        for i in range(25):
             pd = pd.delitem(HashKey(0, i))
         assert len(pd) == 0
 
@@ -173,11 +173,11 @@ class TestPersistentDict(object):
 
     def test_delitem_many(self):
         pd = PersistentDict()
-        for i in xrange(25):
+        for i in range(25):
             pd = pd.setitem(i, i)
         with pytest.raises(KeyError):
             pd.delitem(26)
-        for i in xrange(25):
+        for i in range(25):
             pd = pd.delitem(i)
-        for i in xrange(25):
+        for i in range(25):
             assert i not in pd
