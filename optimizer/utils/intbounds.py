@@ -2,7 +2,7 @@ import sys
 
 
 class IntBounds(object):
-    def __init__(self, lower=-sys.maxint - 1, upper=sys.maxint):
+    def __init__(self, lower=-sys.maxsize - 1, upper=sys.maxsize):
         super(IntBounds, self).__init__()
         self.lower = lower
         self.upper = upper
