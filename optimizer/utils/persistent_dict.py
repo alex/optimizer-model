@@ -146,7 +146,7 @@ class BitmapIndexedNode(Node):
                 jdx = mask(hash_val, shift)
                 nodes[jdx], added = BitmapIndexedNode.EMPTY.setitem(shift + 5, key, hash_val, val)
                 j = 0
-                for i in xrange(32):
+                for i in range(32):
                     if (self.bitmap >> i) & 1 != 0:
                         if self.data[j] is None:
                             nodes[i] = self.data[j + 1]
