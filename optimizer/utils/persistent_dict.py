@@ -187,7 +187,7 @@ class BitmapIndexedNode(Node):
         raise KeyError(key)
 
     def iteritems(self):
-        for i in xrange(0, len(self.data), 2):
+        for i in range(0, len(self.data), 2):
             if self.data[i] is None:
                 for item in self.data[i + 1].iteritems():
                     yield item
