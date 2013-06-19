@@ -119,7 +119,7 @@ class TestPersistentDict(object):
 
     def test_iteritems(self):
         pd = PersistentDict().setitem("a", 3).setitem("b", 4)
-        assert list(pd.iteritems()) == [("a", 3), ("b", 4)]
+        assert set(pd.iteritems()) == set([("a", 3), ("b", 4)])
 
         pd = PersistentDict().setitem(HashKey(0, "a"), 3).setitem(HashKey(0, "b"), 4)
         assert list(pd.iteritems()) == [(HashKey(0, "a"), 3), (HashKey(0, "b"), 4)]

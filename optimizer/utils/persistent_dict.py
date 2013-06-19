@@ -160,7 +160,7 @@ class BitmapIndexedNode(Node):
                 new_data[:2 * idx] = self.data[:2 * idx]
                 new_data[2 * idx] = key
                 new_data[2 * idx + 1] = val
-                new_data[2 * (idx + 1):2 * (n - idx)] = self.data[2 * idx:2 * (n - idx)]
+                new_data[2 * (idx + 1):] = self.data[2 * idx:]
                 return BitmapIndexedNode(self.bitmap | bit, new_data), True
 
     def delitem(self, shift, key, hash_val):
