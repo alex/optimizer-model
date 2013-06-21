@@ -1,2 +1,3 @@
 pytest
 flufl.enum
+flake8

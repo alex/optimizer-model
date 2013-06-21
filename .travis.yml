@@ -5,7 +5,7 @@ python:
     - "3.2"
     - "3.3"
     - "pypy"
-install: pip install -r requirements.txt flake8
+install: pip install -r requirements.txt
 script:
     - py.test
     - "flake8 . --ignore='E128,E501'"
