@@ -32,13 +32,18 @@ class Optimizer(object):
     def new_constant_float(self, floatvalue):
         return ConstantFloat(floatvalue)
 
+    def new_constant_ref(self, refvalue):
+        return ConstantRef(refvalue)
+
     def new_empty_constant(self, tp):
         if tp == Types.INT:
             return self.new_constant_int(0)
         elif tp == Types.FLOAT:
             return self.new_constant_float(0.0)
+        elif tp == Types.REF:
+            return self.new_constant_ref(None)
         else:
-            raise NotImplementedError
+            raise SystemError
 
     def build_operations(self):
         return self.recorder.get_operations()
@@ -139,6 +144,15 @@ class ConstantFloat(BaseConstant):
 
     def getfloat(self):
         return self.floatvalue
+
+
+class ConstantRef(BaseConstant):
+    def __init__(self, refvalue):
+        super(ConstantRef, self).__init__()
+        self.refvalue = refvalue
+
+    def getref(self):
+        return self.refvalue
 
 
 # TODO: needs to share a common base class with BaseOptimization
