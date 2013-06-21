@@ -28,7 +28,7 @@ class Virtualize(BaseOptimization):
             if res is not None:
                 optimizer.make_equal_to(operation, res)
             else:
-                optimizer.make_equal_to(operation, optimizer.new_empty_constant(operation.tp))
+                optimizer.make_equal_to(operation, optimizer.new_empty_constant(operation.gettype()))
         else:
             return self.handle_back(optimizer, operation)
 
@@ -57,7 +57,7 @@ class VirtualValue(BaseValue):
         optimizer.make_equal_to(self.original_operation, p)
         for descr, value in self.setfields.iteritems():
             value = optimizer.getvalue(value)
-            optimizer.add_operation(Types.VOID, Operations.SETFIELD, [p, value], descr=descr)
+            optimizer.add_operation(Operations.SETFIELD, [p, value], descr=descr)
 
     def getfield(self, descr):
         return self.setfields.get(descr)

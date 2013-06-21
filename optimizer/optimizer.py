@@ -18,10 +18,10 @@ class Optimizer(object):
         self.values.append(value)
         return value
 
-    def add_operation(self, tp, op, args, descr=None, optimization=None):
+    def add_operation(self, op, args, descr=None, optimization=None):
         if optimization is None:
             optimization = self.first_optimization
-        value = OperationValue(len(self.values), tp, op, args, descr)
+        value = OperationValue(len(self.values), op, args, descr)
         self.values.append(value)
         optimization.handle(self, value)
         return value
@@ -69,9 +69,8 @@ class AbstractValue(BaseValue):
 
 
 class OperationValue(AbstractValue):
-    def __init__(self, valuenum, tp, op, args, descr):
+    def __init__(self, valuenum, op, args, descr):
         super(OperationValue, self).__init__(valuenum)
-        self.tp = tp
         self.op = op
         self.args = args
         self.descr = descr
@@ -87,6 +86,11 @@ class OperationValue(AbstractValue):
 
     def getdescr(self):
         return self.descr
+
+    def gettype(self):
+        if self.getdescr() is not None:
+            return self.getdescr().gettype()
+        raise NotImplementedError
 
 
 class InputValue(AbstractValue):
