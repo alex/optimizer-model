@@ -52,6 +52,9 @@ class VirtualValue(BaseValue):
     def is_virtual(self):
         return True
 
+    def getvalue(self, optimizer):
+        return self
+
     def force(self, optimizer, optimization):
         p = optimizer.add_operation(Types.REF, Operations.NEW, [], optimization=optimization)
         optimizer.make_equal_to(self.original_operation, p)

@@ -254,3 +254,28 @@ class TestVirtualize(object):
 
         ops = opt.build_operations()
         assert len(ops) == 2
+
+    def test_chain_of_virtuals_unforced(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr, Types.REF)
+
+        p0 = opt.add_operation(Operations.NEW, [], descr=struct_descr)
+        p1 = opt.add_operation(Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Operations.SETFIELD, [p0, p1], descr=field_descr)
+
+        ops = opt.build_operations()
+        assert len(ops) == 0
+
+    def test_chain_of_virtuals_forced(self, cpu):
+        opt = Optimizer([Virtualize])
+        struct_descr = cpu.new_struct()
+        field_descr = cpu.new_field(struct_descr, Types.REF)
+
+        p0 = opt.add_operation(Operations.NEW, [], descr=struct_descr)
+        p1 = opt.add_operation(Operations.NEW, [], descr=struct_descr)
+        opt.add_operation(Operations.SETFIELD, [p0, p1], descr=field_descr)
+        opt.add_operation(Operations.FINISH, [p0])
+
+        ops = opt.build_operations()
+        assert len(ops) == 4
