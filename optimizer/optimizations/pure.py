@@ -6,23 +6,29 @@ from .. import Operations
 
 
 class ConstantFold(BaseOptimization):
-    op_map = {
-        Operations.INT_ADD: operator.add,
-        Operations.INT_SUB: operator.sub,
+    dispatcher = OpDispatcher()
 
-        Operations.INT_EQ: operator.eq,
-        Operations.INT_LT: operator.lt,
-        Operations.INT_GT: operator.gt,
-    }
-
-    def handle(self, optimizer, operation):
-        if operation.op in self.op_map:
+    def make_optimize_operation(func):
+        def optimize_operation(self, optimizer, operation):
             args = optimizer.getvalues(operation.getarglist())
             if all(arg.is_constant() for arg in args):
-                res = self.op_map[operation.op](*(arg.getint() for arg in args))
+                res = func(*(arg.getint() for arg in args))
                 optimizer.make_equal_to(operation, optimizer.new_constant_int(res))
                 return
-        self.handle_back(optimizer, operation)
+            self.handle_back(optimizer, operation)
+        return optimize_operation
+
+    for op, func in [
+        (Operations.INT_ADD, operator.add),
+        (Operations.INT_SUB, operator.sub),
+
+        (Operations.INT_EQ, operator.eq),
+        (Operations.INT_LT, operator.lt),
+        (Operations.INT_GT, operator.gt),
+    ]:
+        dispatcher.register(op)(make_optimize_operation(func))
+
+    handle = dispatcher.build_handler()
 
 
 class GuardPropagation(BaseOptimization):
