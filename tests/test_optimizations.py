@@ -170,7 +170,6 @@ class TestIntBounds(object):
         assert opt.getvalue(i2).getint() == 0
 
 
-
 class TestVirtualize(object):
     def test_simple_new(self, cpu):
         opt = Optimizer([Virtualize])
