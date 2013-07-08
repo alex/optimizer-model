@@ -13,14 +13,16 @@ class Operations(Enum):
     INT_SUB = 6
 
     INT_EQ = 7
-    INT_LT = 8
-    INT_GT = 9
-    INT_GE = 10
+    INT_NE = 8
+    INT_LT = 9
+    INT_LE = 10
+    INT_GT = 11
+    INT_GE = 12
 
-    NEW = 11
+    NEW = 13
 
-    GETFIELD = 12
-    SETFIELD = 13
+    GETFIELD = 14
+    SETFIELD = 15
 
 
 class Types(Enum):
