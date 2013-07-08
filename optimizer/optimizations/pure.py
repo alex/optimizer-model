@@ -53,4 +53,11 @@ class GuardPropagation(BaseOptimization):
             self.handle_back(optimizer, operation)
             optimizer.make_equal_to(operation.getarg(0), optimizer.new_constant_int(0))
 
+    @dispatcher.register(Operations.GUARD_VALUE)
+    def optimize_GUARD_VALUE(self, optimizer, operation):
+        [arg, known] = optimizer.getvalues(operation.getarglist())
+        assert known.is_constant()
+        self.handle_back(optimizer, operation)
+        optimizer.make_equal_to(arg, known)
+
     handle = dispatcher.build_handler()

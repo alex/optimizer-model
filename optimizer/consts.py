@@ -8,21 +8,22 @@ class Operations(Enum):
 
     GUARD_TRUE = 3
     GUARD_FALSE = 4
+    GUARD_VALUE = 5
 
-    INT_ADD = 5
-    INT_SUB = 6
+    INT_ADD = 6
+    INT_SUB = 7
 
-    INT_EQ = 7
-    INT_NE = 8
-    INT_LT = 9
-    INT_LE = 10
-    INT_GT = 11
-    INT_GE = 12
+    INT_EQ = 8
+    INT_NE = 9
+    INT_LT = 10
+    INT_LE = 11
+    INT_GT = 12
+    INT_GE = 13
 
-    NEW = 13
+    NEW = 14
 
-    GETFIELD = 14
-    SETFIELD = 15
+    GETFIELD = 15
+    SETFIELD = 16
 
 
 class Types(Enum):

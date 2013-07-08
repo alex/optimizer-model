@@ -73,6 +73,17 @@ class TestGuardPropogation(object):
 
         assert opt.getvalue(i0).getint() == 1
 
+    def test_guard_value(self):
+        opt = Optimizer([GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        opt.add_operation(Operations.GUARD_VALUE, [i0, opt.new_constant_int(5)])
+
+        ops = opt.build_operations()
+        assert len(ops) == 1
+
+        assert opt.getvalue(i0).getint() == 5
+
 
 class TestIntBounds(object):
     def test_lt(self):
