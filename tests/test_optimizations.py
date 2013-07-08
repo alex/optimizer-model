@@ -135,6 +135,41 @@ class TestIntBounds(object):
         assert len(ops) == 2
         assert opt.getvalue(i2).getint() == 0
 
+    def test_ge(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Operations.INT_GE,
+            [i0, opt.new_constant_int(5)]
+        )
+        opt.add_operation(Operations.GUARD_TRUE, [i1])
+        i2 = opt.add_operation(Operations.INT_GE,
+            [i0, opt.new_constant_int(5)]
+        )
+        opt.add_operation(Operations.GUARD_TRUE, [i2])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+        assert opt.getvalue(i2).getint() == 1
+
+    def test_ge_reverse(self):
+        opt = Optimizer([IntBounds, GuardPropagation])
+        i0 = opt.add_input(Types.INT)
+
+        i1 = opt.add_operation(Operations.INT_LT,
+            [i0, opt.new_constant_int(5)]
+        )
+        opt.add_operation(Operations.GUARD_TRUE, [i1])
+        i2 = opt.add_operation(Operations.INT_GE,
+            [i0, opt.new_constant_int(7)]
+        )
+        opt.add_operation(Operations.GUARD_FALSE, [i2])
+
+        ops = opt.build_operations()
+        assert len(ops) == 2
+        assert opt.getvalue(i2).getint() == 0
+
+
 
 class TestVirtualize(object):
     def test_simple_new(self, cpu):
