@@ -25,6 +25,7 @@ class ConstantFold(BaseOptimization):
         (Operations.INT_EQ, operator.eq),
         (Operations.INT_LT, operator.lt),
         (Operations.INT_GT, operator.gt),
+        (Operations.INT_GE, operator.ge),
     ]:
         dispatcher.register(op)(make_optimize_operation(func))
 
