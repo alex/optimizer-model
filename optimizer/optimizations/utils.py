@@ -16,12 +16,12 @@ class OpDispatcher(object):
 
         def dispatch(self, optimizer, operation):
             if dispatch_table[operation.op.value] is not None:
-                return dispatch_table[operation.op.value](self, optimizer, operation)
-            if default is not None:
-                return default(self, optimizer, operation)
+                dispatch_table[operation.op.value](self, optimizer, operation)
+            elif default is not None:
+                default(self, optimizer, operation)
         return dispatch
 
     def build_handler(self):
         def handler_default(self, optimizer, operation):
-            return self.handle_back(optimizer, operation)
+            self.handle_back(optimizer, operation)
         return self.build_dispatcher(default=handler_default)
