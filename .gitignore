@@ -1,2 +1,4 @@
+.tox/
 *.py[co]
 .DS_store
+*.egg-info/
