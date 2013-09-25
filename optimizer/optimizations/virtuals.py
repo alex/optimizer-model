@@ -53,7 +53,7 @@ class VirtualValue(BaseValue):
         return True
 
     def getvalue(self, optimizer):
-        return self
+        return optimizer.getvalue(self.original_operation)
 
     def force(self, optimizer, optimization):
         p = optimizer.add_operation(Operations.NEW, [], descr=self.struct_descr, optimization=optimization)
