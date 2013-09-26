@@ -49,13 +49,9 @@ Usage
 Optimizations
 -------------
 
-Out of the box, an :class:`optimizer.Optimizer` doesn't actually run any
+Out of the box, an :class:`~optimizer.Optimizer` doesn't actually run any
 optimizations, it just records the operations. However, ``optimizer-model``
-includes many optimizations which can be plugged in:
-
-.. code-block:: python
-
-    opt = Optimizer([list, of, optimization, classes])
+includes many optimizations which can be plugged in.
 
 The optimizations included with ``optimizer-model`` are:
 
