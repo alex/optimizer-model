@@ -1,41 +1,50 @@
 Usage
 =====
 
-To use ``optimizer-model``, first you need to instantiate an
-:class:`optimizer.Optimizer`:
+.. class:: optimizer.Optimizer(optimization_classes=[])
 
-.. code-block:: python
+    This is the core of ``optimizer-model``. By default it performs no
+    optimizations, but you can easily add them:
 
-    from optimizer import Optimizer
+    .. code-block:: python
 
-    opt = Optimizer()
+        from optimizer import Optimizer
 
-You can then add inputs variables to it:
+        opt = Optimizer()
+        opt = Optimizer([optimization, classes, here])
 
-.. code-block:: python
+    .. method:: add_input(tp)
 
-    from optimizer import Types
+        This adds input variables to a trace.
 
-    i0 = opt.add_input(Types.INT)
-    i1 = opt.add_input(Types.INT)
 
-And then you can add operations, adding an operation returns a reference to the
-result:
+        .. code-block:: python
 
-.. code-block:: python
+            from optimizer import Types
 
-    from optimizer import Operations
+            i0 = opt.add_input(Types.INT)
+            i1 = opt.add_input(Types.INT)
 
-    i2 = opt.add_operation(Operations.INT_ADD, [i0, i1])
-    opt.add_operation(Operations.FINISH, [i2])
+    .. method:: add_operation(op, args, descr=None)
 
-When you're done, you can get a list of the operations that were performed
-(after all of the optimizations have been applied):
+        Adds an operation to the sequence of operations, and runs it through
+        all of the optimizations. Returns a representation of the result.
 
-.. code-block:: python
+        .. code-block:: python
 
-    ops = opt.build_operations()
-    assert len(ops) == 3
+            from optimizer import Operations
+
+            i2 = opt.add_operation(Operations.INT_ADD, [i0, i1])
+            opt.add_operation(Operations.FINISH, [i2])
+
+    .. method:: build_operations()
+
+        Returns a sequence of all of the operations, after optimizations:
+
+        .. code-block:: python
+
+            ops = opt.build_operations()
+            assert len(ops) == 3
 
 Optimizations
 -------------
