@@ -3,7 +3,7 @@ from .. import Operations
 
 class OpDispatcher(object):
     def __init__(self):
-        self.dispatch_table = [None] * len(Operations._enums)
+        self.dispatch_table = [None] * len(Operations)
 
     def register(self, op):
         def inner(func):
