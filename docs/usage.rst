@@ -3,8 +3,11 @@ Usage
 
 .. class:: optimizer.Optimizer(optimization_classes=[])
 
-    This is the core of ``optimizer-model``. By default it performs no
-    optimizations, but you can easily add them:
+    This is the core of ``optimizer-model``. This performs "on-line"
+    optimization, meaning that operations are optimized as they're added, not
+    all at once at the end. By default it actually performs no optimizations,
+    it just records the operations which are added, but you can easily add
+    them:
 
     .. code-block:: python
 
